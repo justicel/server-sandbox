@@ -1,5 +1,6 @@
-FROM couchbase/server:SANDBOX_VERSION
+FROM couchbase/server:7.0.1
 
+COPY scripts/entrypoint.sh /entrypoint.sh
 COPY scripts/configure-node.sh /etc/service/config-couchbase/run
 RUN chown -R couchbase:couchbase /etc/service
 COPY scripts/create-index.json /opt/couchbase
