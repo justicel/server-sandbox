@@ -4,6 +4,7 @@
 # for things we want to show up in "docker logs".
 LOGFILE=/opt/couchbase/var/lib/couchbase/logs/container-startup.log
 REST_PORT=${REST_PORT:-8091}
+MEMCACHED_PORT=${MEMCACHED_PORT:-11210}
 
 exec 3>&1 1>>${LOGFILE} 2>&1
 
@@ -108,6 +109,10 @@ couchbase_cli_check user-manage --set \
   --rbac-username admin --rbac-password password \
   --roles 'bucket_full_access[travel-sample]' --auth-domain local \
   -c 127.0.0.1:$REST_PORT -u Administrator -p password
+echo
+
+echo "Enabling 'localhost' alternative hostname with curl:"
+curl_check -u Administrator:password -X PUT "http://127.0.0.1:$REST_PORT/node/controller/setupAlternateAddresses/external" -d hostname=localhost -d kv=$MEMCACHED_PORT
 echo
 
 echo "Configuration completed!" | tee /dev/fd/3
